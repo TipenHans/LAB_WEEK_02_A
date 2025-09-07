@@ -2,61 +2,39 @@ package com.example.lab_week_02_a
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.Toast
+import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import android.widget.Button
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.textfield.TextInputEditText
-import androidx.activity.result.contract.ActivityResultContracts
+
 
 class MainActivity : AppCompatActivity() {
-    companion object {
-        private const val COLOR_KEY = "COLOR_KEY"
-        private const val ERROR_KEY = "ERROR_KEY"
+    companion object{
+        private const val DEBUG = "DEBUG"
     }
-    private val submitButton: Button
-        get() = findViewById(R.id.submit_button)
-    private val startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-                activityResult ->
-            val data = activityResult.data
-            val error = data?.getBooleanExtra(ERROR_KEY, false)
-            if(error == true){
-                Toast
-                    .makeText(this, getString(R.string.color_code_input_invalid), Toast.LENGTH_LONG)
-                    .show()
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        submitButton.setOnClickListener{
-            val colorCode =
-                findViewById<TextInputEditText>(R.id.color_code_input_field).text.toString()
-            if(colorCode.isNotEmpty()){
-                if (colorCode.length < 6){
-                    Toast
-                        .makeText(this, getString(R.string.color_code_input_wrong_length),
-                            Toast.LENGTH_LONG)
-                        .show()
-                }
-                else{
-                    val ResultIntent = Intent(this, ResultActivity::class.java)
-                    ResultIntent.putExtra(COLOR_KEY, colorCode)
-                    //startActivity(ResultIntent)
-                    startForResult.launch(ResultIntent)
-                }
-            }
-
-            else{
-                Toast
-                    .makeText(this, getString(R.string.color_code_input_empty),
-                        Toast.LENGTH_LONG)
-                    .show()
+        Log.d(DEBUG, "onCreate")
+        val buttonClickListener = View.OnClickListener { view ->
+            when (view.id) {
+                R.id.button_standard -> startActivity(
+                    Intent(
+                        this,
+                        StandardActivity::class.java
+                    )
+                )
+                R.id.button_single_top -> startActivity(
+                    Intent(this,
+                        SingleTopActivity::class.java)
+                )
             }
         }
+        findViewById<Button>(R.id.button_standard).setOnClickListener(buttonClickListener)
+        findViewById<Button>(R.id.button_single_top).setOnClickListener(buttonClickListener
+        )
     }
 }
